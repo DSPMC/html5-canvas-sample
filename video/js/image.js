@@ -167,6 +167,166 @@ function manipulationSample(context, canvas){
     imageObj.src = "img/sanji.jpg";
 }
 
+// 6 Grayscale
+function grayscaleSample(context, canvas){
+    var imageObj = new Image();
+    imageObj.onload = function(){
+        var sourceWidth = this.width;
+        var sourceHeight = this.height;
+        var destX = canvas.width / 2 - sourceWidth / 2;
+        var destY = canvas.height / 2 - sourceHeight / 2;
+        var sourceX = destX;
+        var sourceY = destY;
+        
+        context.drawImage(this, destX, destY);
+        
+        var imageData = context.getImageData(sourceX, sourceY, sourceWidth, sourceHeight);
+        var data = imageData.data;
+
+        for (var i = 0; i < data.length; i += 4) {
+            var brightness = 0.34 * data[i] + 0.5 * data[i + 1] + 0.16 * data[i + 2];
+            
+            data[i] = brightness; // red
+            data[i + 1] = brightness; // green
+            data[i + 2] = brightness; // blue
+            // i+3 is alpha (the fourth element)
+        }
+
+        // overwrite original image
+        context.putImageData(imageData, destX, destY);
+    };
+    imageObj.src = "img/sanji.jpg";
+}
+
+// 7 DataURL
+function dataurlSample(context, canvas) {
+    var startX = 200;
+    var startY = 100;
+    
+    // draw cloud shape
+    context.beginPath();
+    context.moveTo(startX, startY);
+    context.bezierCurveTo(startX - 40, startY + 20, startX - 40, startY + 70, startX + 60, startY + 70);
+    context.bezierCurveTo(startX + 80, startY + 100, startX + 150, startY + 100, startX + 170, startY + 70);
+    context.bezierCurveTo(startX + 250, startY + 70, startX + 250, startY + 40, startX + 220, startY + 20);
+    context.bezierCurveTo(startX + 260, startY - 40, startX + 200, startY - 50, startX + 170, startY - 30);
+    context.bezierCurveTo(startX + 150, startY - 75, startX + 80, startY - 60, startX + 80, startY - 30);
+    context.bezierCurveTo(startX + 30, startY - 75, startX - 20, startY - 60, startX, startY);
+    context.closePath();
+  
+    context.lineWidth = 5;
+    context.fillStyle = "#8ED6FF";
+    context.fill();
+    context.strokeStyle = "#0000ff";
+    context.stroke();
+
+    // save canvas image as data url (png format by default)
+    var dataURL = canvas.toDataURL();
+
+    // insert url into the HTML document so we can see it
+    document.getElementById("dataURL").innerHTML = "<b>dataURL:</b> " + dataURL;
+}
+
+// 8 Get image from base64 encoded data
+function loadCanvas(dataURL){
+    var canvas = document.getElementById("myCanvas8");
+    var context = canvas.getContext("2d");
+    
+    // load image from data url
+    var imageObj = new Image();
+    imageObj.onload = function(){
+        context.drawImage(this, 0, 0);
+    };
+    
+    imageObj.src = dataURL;
+}
+
+function loadImageSample() {
+    // make ajax call to get image data url
+    var request = new XMLHttpRequest();
+    request.open("GET", "img/sample.txt", true);
+    request.onreadystatechange = function(){
+        if (request.readyState == 4) { 
+            if (request.status == 200) { // successful response
+                loadCanvas(request.responseText);
+            }
+        }
+    };
+    request.send(null);
+}
+
+
+// 9 Pixelated
+function focusImage(canvas, context, imageObj, pixelation){
+    var sourceWidth = imageObj.width;
+    var sourceHeight = imageObj.height;
+    var sourceX = canvas.width / 2 - sourceWidth / 2;
+    var sourceY = canvas.height / 2 - sourceHeight / 2;
+    var destX = sourceX;
+    var destY = sourceY;
+    
+    var imageData = context.getImageData(sourceX, sourceY, sourceWidth, sourceHeight);
+    var data = imageData.data;
+    
+    for (var y = 0; y < sourceHeight; y += pixelation) {
+        for (var x = 0; x < sourceWidth; x += pixelation) {
+            // get the color components of the sample pixel
+            var red = data[((sourceWidth * y) + x) * 4];
+            var green = data[((sourceWidth * y) + x) * 4 + 1];
+            var blue = data[((sourceWidth * y) + x) * 4 + 2];
+            
+            // overwrite pixels in a square below and to
+            // the right of the sample pixel, whos width and
+            // height are equal to the pixelation amount
+            for (var n = 0; n < pixelation; n++) {
+                for (var m = 0; m < pixelation; m++) {
+                    if (x + m < sourceWidth) {
+                        data[((sourceWidth * (y + n)) + (x + m)) * 4] = red;
+                        data[((sourceWidth * (y + n)) + (x + m)) * 4 + 1] = green;
+                        data[((sourceWidth * (y + n)) + (x + m)) * 4 + 2] = blue;
+                    }
+                }
+            }
+        }
+    }
+    
+    // overwrite original image
+    context.putImageData(imageData, destX, destY);
+}
+
+function pixelatedSample(context, canvas){
+    var fps = 10; // frames / second
+    var timeInterval = 1000 / fps; // milliseconds
+                    
+    // define initial pixelation.  The higher the value,
+    // the more pixelated the image is.  The image is
+    // perfectly focused when pixelation = 1;
+    var pixelation = 50;
+
+    var imageObj = new Image();
+    imageObj.onload = function(){
+        var sourceWidth = imageObj.width;
+        var sourceHeight = imageObj.height;
+        var destX = canvas.width / 2 - sourceWidth / 2;
+        var destY = canvas.height / 2 - sourceHeight / 2;
+        
+        var intervalId = setInterval(function(){
+            context.drawImage(imageObj, destX, destY);
+            
+            if (pixelation < 1) {
+                clearInterval(intervalId);
+            }
+            else {
+                focusImage(canvas, context, imageObj, pixelation--);
+            }
+        }, timeInterval);
+        // test
+        //context.drawImage(imageObj, destX, destY);
+        //focusImage(canvas, context, imageObj, pixelation--);
+    };
+    imageObj.src = "img/sanji.jpg";
+}
+
 
 window.onload = function(){
 
@@ -207,5 +367,27 @@ window.onload = function(){
     var canvas5 = document.getElementById("myCanvas5");
     var context5 = canvas5.getContext("2d");
     manipulationSample(context5, canvas5);
+
+
+    // Grayscale
+    var canvas6 = document.getElementById("myCanvas6");
+    var context6 = canvas6.getContext("2d");
+    grayscaleSample(context6, canvas6);
+
+
+    // dataURL
+    var canvas7 = document.getElementById("myCanvas7");
+    var context7 = canvas7.getContext("2d");
+    dataurlSample(context7, canvas7);
+
+
+    // load dataURL
+    loadImageSample();
+
+
+    // Pixelated
+    var canvas9 = document.getElementById("myCanvas9");
+    var context9 = canvas9.getContext("2d");
+    pixelatedSample(context9, canvas9);
 };
 
