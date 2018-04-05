@@ -301,7 +301,7 @@ function pixelatedSample(context, canvas){
     // define initial pixelation.  The higher the value,
     // the more pixelated the image is.  The image is
     // perfectly focused when pixelation = 1;
-    var pixelation = 50;
+    var pixelation = 10;
 
     var imageObj = new Image();
     imageObj.onload = function(){
@@ -310,7 +310,7 @@ function pixelatedSample(context, canvas){
         var destX = canvas.width / 2 - sourceWidth / 2;
         var destY = canvas.height / 2 - sourceHeight / 2;
         
-        var intervalId = setInterval(function(){
+        /* var intervalId = setInterval(function(){
             context.drawImage(imageObj, destX, destY);
             
             if (pixelation < 1) {
@@ -319,10 +319,10 @@ function pixelatedSample(context, canvas){
             else {
                 focusImage(canvas, context, imageObj, pixelation--);
             }
-        }, timeInterval);
+        }, timeInterval); */
         // test
-        //context.drawImage(imageObj, destX, destY);
-        //focusImage(canvas, context, imageObj, pixelation--);
+        context.drawImage(imageObj, destX, destY);
+        focusImage(canvas, context, imageObj, pixelation--);
     };
     imageObj.src = "img/sanji.jpg";
 }
