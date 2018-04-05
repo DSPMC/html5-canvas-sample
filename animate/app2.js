@@ -237,42 +237,42 @@ function drawImages(images){
         this.clear();
         this.beginRegion();
             
-        context.drawImage(images.challengerImg, 50, 70, 240, 143);
+        context.drawImage(images.shaImg, 50, 70, 240, 143);
         // draw rectangular region for image
         context.beginPath();
         context.rect(50, 70, 240, 143);
         context.closePath();
         
         this.addRegionEventListener("mouseover", function(){
-            message = "Dodge Challenger mouseover!";
+            message = "Sharingan mouseover!";
         });
         this.addRegionEventListener("mouseout", function(){
-            message = "Dodge Challenger mouseout!";
+            message = "Sharingan mouseout!";
         });
         this.addRegionEventListener("mousedown", function(){
-            message = "Dodge Challenger mousedown!";
+            message = "Sharingan mousedown!";
         });
         this.addRegionEventListener("mouseup", function(){
-            message = "Dodge Challenger mouseup!";
+            message = "Sharingan mouseup!";
         });
         this.closeRegion();
         
         this.beginRegion();
-        context.drawImage(images.cobraImg, 350, 50, 200, 150);
+        context.drawImage(images.rinImg, 350, 50, 200, 150);
         // draw rectangular region for image             context.beginPath();
         context.rect(350, 50, 200, 150);
         context.closePath();
         this.addRegionEventListener("mouseover", function(){
-            message = "AC Cobra mouseover!";
+            message = "Rinnegan mouseover!";
         });
         this.addRegionEventListener("mouseout", function(){
-            message = "AC Cobra mouseout!";
+            message = "Rinnegan mouseout!";
         });
         this.addRegionEventListener("mousedown", function(){
-            message = "AC Cobra mousedown!";
+            message = "Rinnegan mousedown!";
         });
         this.addRegionEventListener("mouseup", function(){
-            message = "AC Cobra mouseup!";
+            message = "Rinnegan mouseup!";
         });
         this.closeRegion();
         
@@ -283,8 +283,8 @@ function drawImages(images){
 function imageEventSample(){
 
     var sources = {
-        challengerImg: "img/eye.png",
-        cobraImg: "img/eye.png"
+        shaImg: "img/eye.png",
+        rinImg: "img/eye2.png"
     };
     
     loadImages(sources, drawImages);
