@@ -1,4 +1,4 @@
-# Samples of HTML5 Canvas Implmentation
+# Samples of HTML5 Canvas Implementation
 
 ## Introduction
 These samples are based on **HTML5 Canvas Cookbook** by **Eric Rowell** with some changes provided for a course in my campus. 
